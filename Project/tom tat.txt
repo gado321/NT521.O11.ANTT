@@ -1,0 +1,64 @@
+1
+============================================================
+Bài báo này sử dụng 4 kỹ thuật chính cho 4 giai đoạn chính trong phương pháp đề xuất, bao gồm:
+
+Kỹ thuật 01: Tạo lời nhắc cho LLM. Lời nhắc là một đoạn mã nguồn và bình luận được đưa vào LLM để sinh ra một dòng mã hoặc bình luận thay thế. Lời nhắc có thể có tiền tố (phần mã trước dòng cần kiểm tra) và hậu tố (phần mã sau dòng cần kiểm tra). Lời nhắc giúp LLM hiểu ngữ cảnh và ý định của mã nguồn.
+Kỹ thuật 02: Sinh dòng mã bằng LLM. LLM là một mô hình học máy lớn có khả năng sinh ra văn bản hoặc mã nguồn dựa trên lời nhắc. Bài báo này sử dụng hai LLM là code-davinci-002 và gpt-3.5-turbo, với hai chế độ hoàn thành là tự động hoàn thành (auto-complete) và chèn (insertion). Dòng mã được sinh ra sẽ được so sánh với dòng mã gốc để phát hiện sự khác biệt.
+Kỹ thuật 03: Trích xuất đặc trưng từ dòng mã. Đặc trưng là các giá trị số được tính toán từ dòng mã gốc và dòng mã được sinh ra. Các đặc trưng bao gồm khoảng cách Levenshtein (ld), điểm BLEU, khoảng cách từ bình luận (dfc) và logprob. Các đặc trưng này thể hiện mức độ tương đồng, sự phù hợp và độ tin cậy của dòng mã được sinh ra so với dòng mã gốc.
+Kỹ thuật 04: Phân loại dòng mã có khả năng lỗi. Phân loại là quá trình lựa chọn các dòng mã cần được kiểm tra thêm dựa trên các tiêu chí sử dụng các đặc trưng đã trích xuất. Các tiêu chí có thể bao gồm hoặc loại bỏ các dòng mã theo ngưỡng của ld, dfc và logprob. Các dòng mã được phân loại là có khả năng lỗi sẽ được gắn cờ để thông báo cho người lập trình.
+============================================================
+
+2
+============================================================
+Bài báo này sử dụng 4 kỹ thuật chính cho 4 giai đoạn chính trong phương pháp đề xuất, bao gồm:
+
+Kỹ thuật 01: Sử dụng các mô hình ngôn ngữ lớn (LLMs) để sinh ra các dòng mã thay thế cho các dòng mã gốc. Vai trò của kỹ thuật này là khai thác khả năng viết mã của LLMs để tạo ra các phiên bản mã khác nhau cho cùng một chức năng hoặc ý định. Bằng cách so sánh mã gốc với mã sinh ra, có thể phát hiện ra những sự khác biệt đáng chú ý như những lỗi hoặc điểm yếu tiềm ẩn.
+
+Kỹ thuật 02: Trích xuất các đặc trưng (features) để phân loại các dòng mã gốc là có lỗi hay không. Vai trò của kỹ thuật này là đo lường mức độ khác biệt giữa mã gốc và mã sinh ra, cũng như mức độ tin cậy của LLMs trong việc sinh mã. Các đặc trưng bao gồm khoảng cách Levenshtein, điểm BLEU, khoảng cách từ comment và logprob.
+
+Kỹ thuật 03: Sử dụng các tiêu chí (criteria) để lựa chọn các dòng mã cần được kiểm tra. Vai trò của kỹ thuật này là giảm thiểu không gian tìm kiếm cho người thiết kế bằng cách chỉ đưa ra những dòng mã có khả năng cao là có lỗi. Các tiêu chí sử dụng các ngưỡng (thresholds) cho các đặc trưng để bao gồm hoặc loại bỏ các dòng mã.
+
+Kỹ thuật 04: Sử dụng hàm reduce_fp() để giảm số lượng các kết quả sai dương tính (false positives). Vai trò của kỹ thuật này là loại bỏ những dòng mã được đánh dấu là có lỗi nhưng thực sự không có lỗi. Hàm reduce_fp() sử dụng một số biện pháp như loại bỏ khoảng trắng, kiểm tra từ khóa và sử dụng logprob để lọc ra những dòng mã không cần thiết.
+============================================================
+
+3
+============================================================
+Kỹ thuật 01: Large Language Models (LLMs) - là những mô hình học máy có khả năng sinh ra văn bản hoặc mã nguồn dựa trên một đoạn văn bản hoặc mã nguồn đã cho. Vai trò của LLMs là tạo ra các dòng mã nguồn thay thế cho các dòng mã nguồn gốc để so sánh và phát hiện sự khác biệt có thể là lỗi. Bài báo sử dụng hai LLMs là code-davinci-002 và gpt-3.5-turbo của OpenAI1.
+
+Kỹ thuật 02: Prompt formation - là quá trình tạo ra đầu vào cho LLMs bằng cách lấy một phần mã nguồn trước và sau dòng mã nguồn cần kiểm tra. Mục đích của prompt formation là cung cấp ngữ cảnh cho LLMs để sinh ra dòng mã nguồn phù hợp với ý định của tác giả.
+
+Kỹ thuật 03: Feature extraction - là quá trình trích xuất các đặc trưng từ dòng mã nguồn gốc và dòng mã nguồn được sinh ra bởi LLMs. Các đặc trưng bao gồm khoảng cách Levenshtein (ld), điểm BLEU, khoảng cách từ comment (dfc) và logprob. Các đặc trưng này được sử dụng để đo lường mức độ khác biệt giữa hai dòng mã nguồn và mức độ tin cậy của LLMs.
+
+Kỹ thuật 04: Classification - là quá trình phân loại dòng mã nguồn gốc là có thể có lỗi hay không dựa trên các đặc trưng đã trích xuất. Bài báo đề xuất ba tiêu chí phân loại C0, C1 và C2, sử dụng các ngưỡng ld_limit, dfc_limit và reduce_fp để lọc ra các dòng mã nguồn cần được kiểm tra kỹ hơn.
+============================================================
+
+4
+============================================================
+Khả năng: Phương pháp này có khả năng tận dụng sức mạnh của LLMs để sinh ra mã nguồn thay thế cho mã nguồn gốc và so sánh chúng để tìm ra những dòng mã có khả năng chứa lỗi. Đây là một ý tưởng mới mẻ và sáng tạo, có thể giúp hỗ trợ cho các nhà phát triển kiểm tra và sửa lỗi mã nguồn một cách hiệu quả hơn.
+Ưu điểm: Phương pháp này có nhiều ưu điểm so với các phương pháp truyền thống hay các phương pháp dựa trên học máy khác. Một số ưu điểm chính là:
+Phương pháp này không cần biên dịch mã nguồn, do đó có thể hoạt động trên các mã nguồn chưa hoàn thiện hay không tuân theo cú pháp chuẩn. Điều này cho phép kiểm tra lỗi ở giai đoạn sớm hơn của quá trình phát triển.
+Phương pháp này không cần tạo ra các quy tắc hay kiểm thử an ninh cho từng loại lỗi hay từng ngôn ngữ lập trình. Điều này giảm thiểu công sức và thời gian cần thiết để thiết lập các công cụ kiểm tra lỗi. Phương pháp này cũng có tính khả chuyển cao, có thể áp dụng cho nhiều ngôn ngữ lập trình khác nhau.
+Phương pháp này có thể phát hiện được nhiều loại lỗi khác nhau, từ lỗi bảo mật đến lỗi chức năng, từ lỗi cú pháp đến lỗi logic. Phương pháp này cũng có thể phát hiện được những lỗi mà các phương pháp khác bỏ qua, do dựa trên sự khác biệt giữa mã nguồn gốc và mã nguồn được sinh ra, chứ không dựa trên các mẫu hay luồng dữ liệu cố định.
+Nhược điểm: Phương pháp này cũng có một số nhược điểm cần khắc phục hoặc cải thiện. Một số nhược điểm chính là:
+Phương pháp này vẫn có tỷ lệ dương tính giả khá cao, do LLMs có thể sinh ra mã nguồn khác với mã nguồn gốc mà không có lỗi. Điều này có thể gây nhiễu cho người dùng khi kiểm tra các dòng mã được đánh dấu. Phương pháp này cần có thêm các tiêu chí lọc để giảm thiểu số lượng dương tính giả.
+Phương pháp này vẫn bị giới hạn bởi khả năng của LLMs, do đó có thể bỏ sót một số lỗi mà LLMs không thể sinh ra được. Điều này đòi hỏi LLMs phải được huấn luyện trên một tập dữ liệu đủ lớn và đa dạng để có thể hiểu và sinh ra mã nguồn chính xác và hợp lý hơn.
+Phương pháp này chỉ có thể so sánh mã nguồn theo từng dòng, do đó có thể không phát hiện được những lỗi liên quan đến cấu trúc hay luồng của chương trình. Điều này yêu cầu phải kết hợp với các phương pháp phân tích tĩnh hay động khác để có thể kiểm tra toàn diện hơn.
+============================================================
+
+5
+============================================================
+Khả năng: FLAG là một phương pháp sáng tạo và tiềm năng để tận dụng LLMs để hỗ trợ việc kiểm tra mã nguồn. FLAG có thể làm việc với nhiều ngôn ngữ lập trình, không cần biên dịch hay kiểm tra cú pháp, không cần tạo ra các quy tắc hay bài kiểm tra an ninh, và có thể phát hiện được cả các lỗi an toàn thông tin và chức năng.
+Ưu điểm: FLAG đơn giản và dễ triển khai, chỉ cần sử dụng các LLMs có sẵn và một số tính năng đơn giản để phân loại các dòng mã. FLAG có thể giúp giảm thiểu công sức của nhà phát triển khi kiểm tra mã nguồn bằng cách chỉ ra những dòng mã có khả năng chứa lỗi. FLAG cũng có thể làm việc với mã nguồn chưa hoàn thiện hoặc không biên dịch được, cho phép kiểm tra sớm hơn so với các công cụ tĩnh truyền thống.
+Nhược điểm: FLAG vẫn còn một số hạn chế như phụ thuộc vào khả năng của LLMs, cần phải điều chỉnh các ngưỡng để cân bằng giữa độ chính xác và độ nhạy, và không thể xác định vị trí chính xác của lỗi trong một dòng mã. Ngoài ra, FLAG cũng có thể bỏ sót một số loại lỗi mà LLMs không thể sinh ra được hoặc không liên quan đến ý định của nhà phát triển. FLAG cũng có thể gây ra một số trường hợp dương tính giả do sự khác biệt về cách viết hoặc định dạng mã nguồn.
+============================================================
+
+6
+============================================================
+============================================================
+
+7
+============================================================
+============================================================
+
+8
+============================================================
